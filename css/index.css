@@ -1,0 +1,6 @@
+table tbody tr td.control-action:not(:hover) i {
+  display: none;
+}
+table tbody tr td.control-action:hover i {
+  display: inline-block;
+}

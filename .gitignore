@@ -1,0 +1,8 @@
+.DS_Store
+.temp/
+node_modules/
+html&css/
+dist/
+docs/
+db/*.db
+*.zip
