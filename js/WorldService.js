@@ -1,27 +1,57 @@
-const defaultUrl = `http://localhost:3000`;
+const DefaultUrl = "http://localhost:3000"
 
+/**
+ * Service for interacting with the backend API
+ */
 export default class WorldService {
+  /**
+   * Creates an instance of the WorldService class.
+   * @param {String} url The url of the backend API.
+   */
   constructor(url) {
-    this.url = url || defaultUrl;
-  }  
+    this.url = url || DefaultUrl;
+  }
+
+  /**
+   * Retrieves the specified country by it's unique id.
+   * @returns {Promise} Promise contains the data from the request.
+   */
+  getCountry(code) {
+    return new Promise((resolve,reject) => {
+      if (! code) {
+        return resolve(null);
+      }
+      
+      const url = `${ this.url }/countries/${ code }`;
+      console.info(`Requesting data from endpoint: ${ url }`);
+      return $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function(country) {
+          return resolve(country);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      });
+    });
+  }
 
   /**
    * Retrieves all of the available countries.
    * @returns {Promise} Promise contains the data from the request.
    */
   getCountries() {
-    const url = `${ this.url }/countries`;
-    console.log(`Requesting data from endpoint: ${ url }`);
-    //return fetch(url).then(res => res.json());
-
     return new Promise((resolve,reject) => {
+      const url = `${ this.url }/countries`;
+      console.info(`Requesting data from endpoint: ${ url }`);
       return $.ajax({
         url: url,
-        dataType: 'json', // application/json
-        success: (res) => {
-          return resolve (res); 
+        dataType: 'json',
+        success: function(countries) {
+          return resolve(countries);
         },
-        error: (err) => {
+        error: function(err) {
           reject(err);
         }
       });
@@ -33,22 +63,51 @@ export default class WorldService {
    * @param {String} code The unique id / code for the country.
    * @returns {Promise} Promise contains the data from the request.
    */
-  getCities(country) {
-    const url = `${ this.url }/countries/${ country }/cities`;
-    console.log(`Requesting data from endpoint: ${ url }`);
-
+  getCitiesForCountry(code) {
     return new Promise((resolve,reject) => {
+      if (! code) {
+        return resolve([]);
+      }
+
+      const url = `${ this.url }/countries/${ code }/cities`;
+      console.info(`Requesting data from endpoint: ${ url }`);
       return $.ajax({
         url: url,
-        dataType: 'json', // application/json
-        success: (res) => {
-          return resolve (res); 
+        dataType: 'json',
+        success: function(cities) {
+          return resolve(cities);
         },
-        error: (err) => {
+        error: function(err) {
           reject(err);
         }
       });
-    });    
+    });
+  }
+
+  /**
+   * Retrieves the specified city by its unique id.
+   * @param {Number} id The unique id of the city.
+   * @returns {Promise} Promise contains the data from the request.
+   */
+  getCity(id) {
+    return new Promise((resolve,reject) => {
+      if ((! id) || (id <= 0)) {
+        return resolve(null);
+      }
+
+      const url = `${ this.url }/cities/${ id }`;
+      console.info(`Requesting data from endpoint: ${ url }`);
+      return $.ajax({
+        url: url,
+        dataType: 'json',
+        success: function(city) {
+          return resolve(city);
+        },
+        error: function(err) {
+          reject(err);
+        }
+      });
+    });
   }
 
   /**
@@ -56,50 +115,53 @@ export default class WorldService {
    * @param {Number} id The unique id of the city.
    * @returns {Promise} Promise contains the data from the request.
    */
-  deleteCity(city_id) {
-    const url = `${ this.url }/cities/${ city_id }`;
-    console.log(`Sending DELETE request to endpoint: ${ url }`);
+  deleteCity(id) {
     return new Promise((resolve,reject) => {
+      if ((! id) || (id <= 0)) {
+        return reject(null);
+      }
+
+      const url = `${ this.url }/cities/${ id }`;
+      console.info(`Sending DELETE request to endpoint: ${ url }`);
       return $.ajax({
         url: url,
         method: 'DELETE',
-        dataType: 'json', // application/json
-        success: (res) => {
-          return resolve (res); 
+        dataType: 'json',
+        success: function(response) {
+          return resolve(response);
         },
-        error: (err) => {
+        error: function(err) {
           reject(err);
         }
       });
-    });    
-  }
+    });
+  }  
 
   /**
    * Adds the specified city.
    * @param {Object} city The city to add.
    * @returns {Promise} Promise contains the response from the request.
    */
-  createCity(city) {
-    const url = `${ this.url }/cities`;
-    console.log(`Sending POST request to endpoint: ${ url }`);
-
+  addCity(city) {
     return new Promise((resolve,reject) => {
       if (! city) {
         return reject();
-      }  
+      }
 
+      const url = `${ this.url }/cities`;
+      console.info(`Sending POST request to endpoint: ${ url }`);
       return $.ajax({
         url: url,
         method: 'POST',
-        dataType: 'json', // application/json
+        dataType: 'json',
         data: city,
-        success: (res) => {
-          return resolve (res); 
+        success: function(response) {
+          return resolve(response);
         },
-        error: (err) => {
+        error: function(err) {
           reject(err);
         }
       });
-    });   
-  }
-}
+    });
+  }  
+};

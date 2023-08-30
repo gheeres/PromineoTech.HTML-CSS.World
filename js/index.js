@@ -3,4 +3,5 @@ import App from './App.js';
 
 const service = new WorldService();
 const app = new App(service);
-app.intitialize();
+app.initialize();
+app.run();
