@@ -1,0 +1,6 @@
+{
+  "teams": [
+    { "id": 1, "name": "Fond du Lac Blades" },
+    { "id": 2, "name": "Northernettes" }
+  ]
+}
